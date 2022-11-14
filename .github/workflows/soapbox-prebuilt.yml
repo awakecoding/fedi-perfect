@@ -3,17 +3,8 @@ on: workflow_dispatch
 jobs:
   build:
     name: soapbox
-    runs-on: ${{matrix.runner}}
-    strategy:
-      fail-fast: true
-      matrix:
-        arch: [ x86_64 ]
-        os: [ ubuntu-22.04 ]
-
-        include:
-          - os: ubuntu-22.04
-            runner: ubuntu-22.04
-  
+    runs-on: ubuntu-22.04
+      
     steps:
       - name: Configure runner
         run: |
