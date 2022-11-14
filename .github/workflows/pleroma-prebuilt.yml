@@ -5,10 +5,11 @@ jobs:
     name: pleroma [${{matrix.arch}}-${{matrix.os}}]
     runs-on: ${{matrix.runner}}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         arch: [ x86_64 ]
         os: [ ubuntu-20.04, ubuntu-22.04 ]
+        version: [ 2.4.4 ]
 
         include:
           - os: ubuntu-20.04
@@ -26,11 +27,14 @@ jobs:
 
       - name: Clone Pleroma
         run: |
-          git clone -b stable https://git.pleroma.social/pleroma/pleroma /opt/pleroma
+          git clone -b v${{matrix.version}} https://git.pleroma.social/pleroma/pleroma /opt/pleroma
+          rm -rf /opt/pleroma/.git
 
       - name: Build Pleroma
         run: |
           cd /opt/pleroma
+          mix local.hex --force
+          mix local.rebar --force
           mix deps.get
           MIX_ENV=prod time mix compile
 
