@@ -1,0 +1,49 @@
+name: soapbox prebuilt
+on: workflow_dispatch
+jobs:
+  build:
+    name: soapbox
+    runs-on: ${{matrix.runner}}
+    strategy:
+      fail-fast: true
+      matrix:
+        arch: [ x86_64 ]
+        os: [ ubuntu-22.04 ]
+
+        include:
+          - os: ubuntu-22.04
+            runner: ubuntu-22.04
+  
+    steps:
+      - name: Configure runner
+        run: |
+          sudo apt update
+          sudo apt install git xz-utils
+
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Clone soapbox
+        run: |
+          git clone -b v3.0.0-beta.1 https://gitlab.com/soapbox-pub/soapbox /opt/soapbox
+          rm -rf /opt/soapbox/.git
+
+      - name: Build soapbox
+        env:
+          NODE_ENV: production
+        run: |
+          cd /opt/soapbox
+          yarn build
+          mv /opt/soapbox/static /tmp/soapbox
+
+      - name: Package soapbox
+        run: |
+          tar -cJf soapbox.tar.xz -C /tmp soapbox
+
+      - name: Upload soapbox package
+        uses: actions/upload-artifact@v3
+        with:
+          name: soapbox
+          path: soapbox.tar.xz
