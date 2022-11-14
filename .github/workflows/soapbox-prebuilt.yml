@@ -35,6 +35,7 @@ jobs:
           NODE_ENV: production
         run: |
           cd /opt/soapbox
+          yarn
           yarn build
           mv /opt/soapbox/static /tmp/soapbox
 
