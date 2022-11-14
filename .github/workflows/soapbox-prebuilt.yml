@@ -4,7 +4,7 @@ jobs:
   build:
     name: soapbox
     runs-on: ubuntu-22.04
-      
+
     steps:
       - name: Configure runner
         run: |
@@ -18,17 +18,16 @@ jobs:
 
       - name: Clone soapbox
         run: |
-          git clone -b v3.0.0-beta.1 https://gitlab.com/soapbox-pub/soapbox /opt/soapbox
-          rm -rf /opt/soapbox/.git
+          git clone -b v3.0.0-beta.1 https://gitlab.com/soapbox-pub/soapbox soapbox
 
       - name: Build soapbox
         env:
           NODE_ENV: production
         run: |
-          cd /opt/soapbox
+          cd soapbox
           yarn
           yarn build
-          mv /opt/soapbox/static /tmp/soapbox
+          mv soapbox/static /tmp/soapbox
 
       - name: Package soapbox
         run: |
