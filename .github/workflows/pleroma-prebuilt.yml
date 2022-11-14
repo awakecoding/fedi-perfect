@@ -1,0 +1,46 @@
+name: pleroma prebuilt
+on: workflow_dispatch
+jobs:
+  build:
+    name: pleroma [${{matrix.arch}}-${{matrix.os}}]
+    runs-on: ${{matrix.runner}}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ x86_64 ]
+        os: [ ubuntu-20.04 ]
+
+        include:
+          - os: ubuntu-20.04
+            runner: ubuntu-20.04
+  
+    steps:
+      - name: Configure runner
+        run: |
+          sudo apt update
+          sudo apt install git cmake automake autoconf xz-utils
+          sudo apt install libmagic-dev libncurses5-dev libssl-dev
+          sudo apt install build-essential elixir erlang-dev erlang-nox
+
+      - name: Clone Pleroma
+        run: |
+          git clone -b stable https://git.pleroma.social/pleroma/pleroma /opt/pleroma
+
+      - name: Build Pleroma
+        run: |
+          cd /opt/pleroma
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+          MIX_ENV=prod time mix compile
+
+      - name: Package Pleroma
+        run: |
+          PACKAGE_NAME="pleroma-${{matrix.arch}}-${{matrix.os}}"
+          tar -cJf ${PACKAGE_NAME}.tar.xz -C /opt/pleroma pleroma
+
+      - name: Upload Pleroma package
+        uses: actions/upload-artifact@v3
+        with:
+          name: pleroma-${{matrix.arch}}-${{matrix.os}}
+          path: pleroma-${{matrix.arch}}-${{matrix.os}}.tar.xz
