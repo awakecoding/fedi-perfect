@@ -33,6 +33,7 @@ jobs:
       - name: Build Pleroma
         run: |
           cd /opt/pleroma
+          mix local.hex --force
           mix deps.get
           MIX_ENV=prod time mix compile
 
