@@ -41,10 +41,10 @@ jobs:
       - name: Package Pleroma
         run: |
           PACKAGE_NAME="pleroma-${{matrix.arch}}-${{matrix.os}}"
-          tar -cJf ${PACKAGE_NAME}.tar.xz -C /opt pleroma
+          tar -czf ${PACKAGE_NAME}.tar.gz -C /opt pleroma
 
       - name: Upload Pleroma package
         uses: actions/upload-artifact@v3
         with:
           name: pleroma-${{matrix.arch}}-${{matrix.os}}
-          path: pleroma-${{matrix.arch}}-${{matrix.os}}.tar.xz
+          path: pleroma-${{matrix.arch}}-${{matrix.os}}.tar.gz
