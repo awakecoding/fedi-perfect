@@ -27,6 +27,7 @@ jobs:
           asdf plugin-add yarn
           echo "yarn 1.22.19" >> .tool-versions
           asdf install
+          yarn add -D webpack-cli
 
       - name: Build soapbox
         env:
