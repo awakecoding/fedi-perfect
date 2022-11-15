@@ -6,37 +6,16 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Configure runner
-        run: |
-          sudo apt update
-          sudo apt install curl git gpg
-          sudo apt remove yarnpkg npm nodejs
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
-          echo ". $HOME/.asdf/asdf.sh" >> ~/.bashrc
-          echo ". $HOME/.asdf/completions/asdf.bash" >> ~/.bashrc
-
       - name: Clone soapbox
         run: |
-          git clone -b develop https://gitlab.com/soapbox-pub/soapbox.git soapbox
-
-      - name: Configure soapbox
-        run: |
-          cd soapbox
-          exec bash
-          asdf plugin-add nodejs
-          asdf plugin-add yarn
-          echo "yarn 1.22.19" >> .tool-versions
-          asdf install
-          yarn add -D webpack-cli
+          git clone -b v3.0.0-beta.1 https://gitlab.com/soapbox-pub/soapbox.git soapbox
 
       - name: Build soapbox
-        env:
-          NODE_ENV: production
         run: |
           cd soapbox
-          yarn
-          yarn build
-          mv soapbox/static /tmp/soapbox
+          docker build . -t soapbox
+          docker create --name soapbox soapbox
+          docker cp soapbox:/usr/share/nginx/html /tmp/soapbox
 
       - name: Package soapbox
         run: |
