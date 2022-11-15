@@ -21,6 +21,7 @@ jobs:
       - name: Configure soapbox
         run: |
           cd soapbox
+          exec bash
           asdf install
 
       - name: Build soapbox
