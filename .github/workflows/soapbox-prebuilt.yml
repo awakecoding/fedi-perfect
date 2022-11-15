@@ -18,7 +18,7 @@ jobs:
 
       - name: Clone soapbox
         run: |
-          git clone -b v2.0.0 https://gitlab.com/soapbox-pub/soapbox soapbox
+          git clone -b develop https://gitlab.com/soapbox-pub/soapbox soapbox
 
       - name: Build soapbox
         env:
