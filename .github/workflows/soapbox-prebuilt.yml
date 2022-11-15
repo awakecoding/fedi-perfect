@@ -9,7 +9,8 @@ jobs:
       - name: Configure runner
         run: |
           sudo apt update
-          sudo apt install curl git
+          sudo apt install curl git gpg
+          sudo apt remove npm nodejs
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
           echo ". $HOME/.asdf/asdf.sh" >> ~/.bashrc
           echo ". $HOME/.asdf/completions/asdf.bash" >> ~/.bashrc
@@ -22,6 +23,9 @@ jobs:
         run: |
           cd soapbox
           exec bash
+          asdf plugin-add nodejs
+          asdf plugin-add yarn
+          echo "yarn 1.22.19" >> .tool-versions
           asdf install
 
       - name: Build soapbox
